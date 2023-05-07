@@ -1,0 +1,70 @@
+@layout('layouts/main')
+@set('title', 'Login')
+
+@section('content')
+
+<div class="container">
+
+  <h4 class="fs-4 fw-bold text-center">Login</h4>
+
+  <div class="row justify-content-center align-items-center flex-column">
+    <div class="col-12 col-sm-8 col-md-5 col-lg-4">
+
+      <form action="{{ route('AuthController.login') }}" method="post">
+
+        {{ csrfField() }}
+
+        <div class="form-floating mb-3">
+          <input type="email" class="form-control {{ flashMessages.has('errors.email') && 'is-invalid' }}"
+            id="floatingInput" placeholder="name@example.com" name="email" value="{{ flashMessages.get('email', '') }}"
+            required>
+          <label for="floatingInput">Email address</label>
+          @if(flashMessages.has('errors.email'))
+          <p class="fs-6 text-danger fw-semibold">
+            {{ flashMessages.get('errors.email') }}
+          </p>
+          @endif
+        </div>
+
+        <div class="form-floating mb-3">
+          <input type="password" class="form-control {{ flashMessages.has('errors.password') && 'is-invalid' }}"
+            id="floatingPassword" placeholder="Password" name="password" value="{{ flashMessages.get('password', '') }}"
+            required>
+          <label for="floatingPassword">Password</label>
+          @if(flashMessages.has('errors.password'))
+          <p class="fs-6 text-danger fw-semibold">
+            {{ flashMessages.get('errors.password') }}
+          </p>
+          @endif
+        </div>
+        <button type="submit" class="btn btn-primary">
+          Login
+          <i class="fa-solid fa-right-to-bracket ms-2"></i>
+        </button>
+        <a class="btn btn-secondary" href="{{ route('AuthController.signup') }}">
+          Signup
+          <i class="fa-solid fa-user-plus ms-2"></i>
+        </a>
+      </form>
+
+      <div class="mt-5 text-center">
+        <p class="text-muted">Or login with Google, Github or Facebook</p>
+        <a href="{{ route('google.redirect') }}" class="btn btn-primary m-1">
+          <i class="fa-brands fa-google"></i>
+          Google
+        </a>
+        <a href="{{ route('github.redirect') }}" class="btn btn-primary m-1">
+          <i class="fa-brands fa-github"></i>
+          Github
+        </a>
+        <a href="{{ route('facebook.redirect') }}" class="btn btn-primary m-1">
+          <i class="fa-brands fa-facebook"></i>
+          Facebook
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+@endsection

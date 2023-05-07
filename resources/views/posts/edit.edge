@@ -1,0 +1,111 @@
+@layout('layouts/main')
+@set('title', 'Post Edit')
+
+@section('content')
+
+<div class="container">
+  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{{ route('posts.index') }}">Post</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Edit</li>
+    </ol>
+  </nav>
+
+  <div class="row justify-content-around">
+
+    <div class="col-12 col-md-6 col-lg-4">
+      {{--  image preview  --}}
+      <h4 class="mb-4 fs-4 fw-bold text-center">Profile Image Preview</h4>
+
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <p class="text-center fs-4">Previous Image</p>
+          <img src="{{ post.$extras.url }}" alt="profile" class="img-thumbnail">
+        </div>
+
+        <div id="imgContainer" style="display:none;">
+          <p class="text-center fs-4">New Image</p>
+          <img src="" alt="newImage" class="img-thumbnail" id="upImage" style="display:none;">
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-12 col-md-6 col-lg-4">
+      {{--  form  --}}
+      <h4 class="mb-4 fs-4 fw-bold text-center">Edit Profile</h4>
+
+      <form action="{{ route('posts.update', { id: post.id }, { qs: { _method: 'PUT'} }) }}" method="post"
+        enctype="multipart/form-data">
+
+        {{ csrfField() }}
+
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control {{ flashMessages.has('errors.title') && 'is-invalid' }}"
+            id="floatingInput" name="title" placeholder="Title" value="{{ flashMessages.get('title', post.title) }}"
+            required>
+          <label for="floatingInput">Title</label>
+          @if(flashMessages.has('errors.title'))
+          <p class="fs-6 text-danger fw-semibold">
+            {{ flashMessages.get('errors.title') }}
+          </p>
+          @endif
+        </div>
+
+        <div class="form-floating mb-3">
+          <textarea class="form-control {{ flashMessages.has('errors.description') && 'is-invalid' }}"
+            id="descriptionInput" name="description" placeholder="Description"
+            value="{{ flashMessages.get('description', post.description) }}" style="height:100px" required></textarea>
+          <label for="floatingInput">Description</label>
+          @if(flashMessages.has('errors.description'))
+          <p class="fs-6 text-danger fw-semibold">
+            {{ flashMessages.get('errors.description') }}
+          </p>
+          @endif
+        </div>
+        <script>
+          const desc = document.getElementById('descriptionInput')
+          const value = "{{ post.description }}"
+          if (value) {
+            desc.innerHTML = value
+          }
+
+        </script>
+
+        <div class="input-group mb-3">
+          <label class="input-group-text" for="inputGroupFile01">Profile Image</label>
+          <input type="file" class="form-control" id="postImage" name="postImage">
+        </div>
+
+        @!component('components/tag_input', {
+        tags:post.tags
+        })
+
+        <button type="submit" class="btn btn-success mt-2">
+          Update
+          <i class="fa-solid fa-pen-to-square ms-2"></i>
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+</div>
+
+
+<script>
+  $(document).ready(() => {
+    $('input[type="file"]').change((e) => {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        $('#upImage').css('display', 'block').attr('src', e.target.result)
+        $('#imgContainer').css('display', 'block')
+      }
+      const file = e.target.files[0]
+      reader.readAsDataURL(file)
+    })
+  })
+
+</script>
+
+@endsection

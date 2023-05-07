@@ -1,0 +1,117 @@
+@import 'constants';
+
+/*
+* Write your customization here, follow this instructions
+* 1) Define your color variables in constants file
+* 2) NOTE: DO NOT WRITE IT AFTER BOOTSTRAP IMPORT FILE
+*/
+
+// button
+$btn-padding-y: $input-btn-padding-y;
+$btn-padding-x: $input-btn-padding-x;
+$btn-font-weight: $font-weight-bold;
+$btn-border-radius: $border-radius;
+$input-btn-border-width: 0.5px;
+
+// list group
+$list-group-border-radius: $border-radius;
+
+// navbar toggler
+$navbar-toggler-border-radius: 0.5rem;
+$navbar-toggler-focus-width: 0.1rem;
+
+$btn-focus-width: $input-btn-focus-width;
+
+$font-family-sans-serif: IBM Plex Sans, sans-serif,
+  // Cross-platform generic font family (default user interface font)
+  system-ui,
+  // Safari for macOS and iOS (San Francisco)
+  -apple-system,
+  // Windows
+  'Segoe UI',
+  // Android
+  Roboto,
+  // Basic web fallback
+  'Helvetica Neue',
+  Arial,
+  // Linux
+  'Noto Sans',
+  'Liberation Sans',
+  // Sans serif fallback
+  sans-serif,
+  // Emoji fonts
+  'Apple Color Emoji',
+  'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji' !default;
+
+// importing bootstrap scss
+@import '~bootstrap/scss/bootstrap.scss';
+
+// importing font awesome
+@import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
+@import '~@fortawesome/fontawesome-free/scss/brands.scss';
+@import '~@fortawesome/fontawesome-free/scss/regular.scss';
+@import '~@fortawesome/fontawesome-free/scss/solid.scss';
+@import '~@fortawesome/fontawesome-free/scss/v4-shims.scss';
+
+/* ---- grid ---- */
+
+/* clear fix */
+.grid:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+/* ---- .grid-item ---- */
+.grid-sizer,
+.grid-item {
+  width: 100%;
+}
+
+.grid-item {
+  float: left;
+}
+
+.grid-item img {
+  display: block;
+  max-width: 100%;
+}
+
+// X-Small devices (portrait phones, less than 576px)
+// No media query for `xs` since this is the default in Bootstrap
+
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) {
+  .grid-sizer,
+  .grid-item {
+    width: 50%;
+  }
+}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {
+  .grid-sizer,
+  .grid-item {
+    width: 33.33%;
+  }
+}
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+  .grid-sizer,
+  .grid-item {
+    width: 25%;
+  }
+}
+
+// X-Large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) {
+  // .grid-sizer,
+  // .grid-item {
+  //   width: 20%;
+  // }
+}
+
+// XX-Large devices (larger desktops, 1400px and up)
+@media (min-width: 1400px) {
+}

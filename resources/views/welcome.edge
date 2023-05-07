@@ -1,0 +1,8 @@
+@layout('layouts/main')
+@set('title', 'Welcome')
+
+@section('content')
+<div class="container">
+  @!component('components/posts_list.edge', { posts })
+</div>
+@endsection

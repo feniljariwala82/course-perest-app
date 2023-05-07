@@ -1,0 +1,91 @@
+@layout('layouts/main')
+@set('title', 'Profile')
+
+@section('content')
+
+<div class="container">
+
+  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Profile</li>
+    </ol>
+  </nav>
+
+  <div class="text-center">
+
+    @if(fetchedProfile.storage_prefix)
+    <img src="{{ profileUrl }}" alt="fetchedProfile" class="img-thumbnail" style="height:300px">
+    @elseif(fetchedProfile.social_auth === 'google' || fetchedProfile.social_auth === 'github' ||
+    fetchedProfile.social_auth === 'facebook')
+    <img src="{{ fetchedProfile.avatar_url }}" alt="fetchedProfile" class="img-thumbnail">
+    @else
+    <p class="fs-5 text-capitalize text-center text-danger">Image Not Available</p>
+    @endif
+
+    <h4 class="mt-4 fw-bold text-capitalize">{{ fetchedProfile.full_name }}</h4>
+
+    <h5 class="mt-2 fw-normal">{{ fetchedProfile.user.email }}</h5>
+
+    <button type="button" class="btn btn-primary" id="shareBtn" data-bs-toggle='modal' data-bs-target='#staticBackdrop'>
+      <i class="fa-solid fa-share-nodes"></i>
+      Share
+    </button>
+
+    @can('ProfilePolicy.update', fetchedProfile)
+    <a href="{{ route('profile.edit', { id: fetchedProfile.id }) }}" class="btn btn-secondary">
+      <i class="fa-solid fa-user-pen"></i>
+      Edit Profile
+    </a>
+    @end
+
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+      aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Link Copied</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Link has been copied..
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <h3 class="mt-4 text-primary">
+    <i class="fa-solid fa-seedling"></i>
+    Posts by <span><strong class="text-capitalize">{{ fetchedProfile.full_name }}</strong></span>
+  </h3>
+
+  <hr>
+
+  @!component('components/posts_list.edge', { posts })
+
+</div>
+
+<script>
+  $(document).ready(() => {
+    const copyToClipboard = () => {
+      let input = document.body.appendChild(document.createElement('input'))
+      input.value = window.location.href
+      input.focus()
+      input.select()
+      document.execCommand('copy')
+      input.parentNode.removeChild(input)
+    }
+
+    $('#shareBtn').on("click", () => {
+      copyToClipboard()
+    })
+  })
+
+</script>
+
+@endsection

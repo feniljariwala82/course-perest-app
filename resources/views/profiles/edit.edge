@@ -1,0 +1,121 @@
+@layout('layouts/main')
+@set('title', 'Edit Profile')
+
+@section('content')
+
+<div class="container">
+  <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+      <li class="breadcrumb-item" aria-current="page">
+        <a href="{{ route('profile.show', {id: fetchedProfile.id}) }}">Profile</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">Edit</li>
+    </ol>
+  </nav>
+
+  <div class="row justify-content-around">
+
+    <div class="col-12 col-md-6 col-lg-4">
+      {{--  image preview  --}}
+      <h4 class="mb-4 fs-4 fw-bold text-center">Profile Image Preview</h4>
+
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <p class="text-center fs-4">Previous Image</p>
+          @if(fetchedProfile.storage_prefix)
+          <img src="data:image/png;base64, {{imgBase64}}" alt="fetchedProfile" class="img-thumbnail"
+            style="height:300px">
+          @elseif(fetchedProfile.social_auth === 'google' || fetchedProfile.social_auth === 'github' ||
+          fetchedProfile.social_auth ===
+          'facebook')
+          <img src="{{ fetchedProfile.avatar_url }}" alt="fetchedProfile" class="img-thumbnail">
+          @else
+          <p class="fs-5 text-capitalize text-center text-danger">Image Not Available</p>
+          @endif
+        </div>
+
+        <div id="imgContainer" style="display:none;">
+          <p class="text-center fs-4">New Image</p>
+          <img src="" alt="newImage" class="img-thumbnail" id="upImage" style="display:none;">
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-12 col-md-6 col-lg-4">
+      {{--  form  --}}
+      <h4 class="mb-4 fs-4 fw-bold text-center">Edit Profile</h4>
+
+      <form action="{{ route('profile.update', { id: fetchedProfile.id }, { qs: { _method: 'PUT'} }) }}" method="post"
+        enctype="multipart/form-data">
+
+        {{ csrfField() }}
+
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control {{ flashMessages.has('errors.firstName') && 'is-invalid' }}"
+            id="floatingInput" placeholder="name@example.com" name="firstName"
+            value="{{ flashMessages.get('firstName', fetchedProfile.first_name) }}">
+          <label for="floatingInput">First Name</label>
+          @if(flashMessages.has('errors.firstName'))
+          <p class="fs-6 text-danger fw-semibold">
+            {{ flashMessages.get('errors.firstName') }}
+          </p>
+          @endif
+        </div>
+
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control {{ flashMessages.has('errors.lastName') && 'is-invalid' }}"
+            id="floatingInput" placeholder="name@example.com" name="lastName"
+            value="{{ flashMessages.get('lastName', fetchedProfile.last_name) }}">
+          <label for="floatingInput">Last Name</label>
+          @if(flashMessages.has('errors.lastName'))
+          <p class="fs-6 text-danger fw-semibold">
+            {{ flashMessages.get('errors.lastName') }}
+          </p>
+          @endif
+        </div>
+
+        <div class="input-group mb-3">
+          <label class="input-group-text" for="inputGroupFile01">Profile Image</label>
+          <input type="file" class="form-control" id="postImage" name="postImage">
+        </div>
+
+        <div class="form-floating mb-3">
+          <input type="password" class="form-control {{ flashMessages.has('errors.password') && 'is-invalid' }}"
+            id="floatingPassword" placeholder="Password" name="password">
+          <label for="floatingPassword">Password</label>
+          @if(flashMessages.has('errors.password'))
+          <p class="fs-6 text-danger fw-semibold">
+            {{ flashMessages.get('errors.password') }}
+          </p>
+          @endif
+        </div>
+
+        <button type="submit" class="btn btn-success">
+          Update
+          <i class="fa-solid fa-pen-to-square ms-2"></i>
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  $(document).ready(() => {
+    $('input[type="file"]').change((e) => {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        $('#upImage').css('display', 'block').attr('src', e.target.result)
+        $('#imgContainer').css('display', 'block')
+      }
+      const file = e.target.files[0]
+      reader.readAsDataURL(file)
+    })
+  })
+
+</script>
+
+@endsection

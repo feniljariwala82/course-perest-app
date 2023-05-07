@@ -1,0 +1,130 @@
+<div class="row">
+  <div class="col-12 col-sm-10">
+
+    <div id="tagContainer">
+      {{--  inputs for tags[]  --}}
+    </div>
+
+    {{--  input  --}}
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control {{ flashMessages.has('errors.tags') && 'is-invalid' }}" placeholder="Tags"
+        id="tagInput">
+      <label for="floatingInput">Tags</label>
+      @if(flashMessages.has('errors.tags'))
+      <p class="fs-6 text-danger fw-semibold">
+        {{ flashMessages.get('errors.tags') }}
+      </p>
+      @endif
+    </div>
+
+  </div>
+  <div class="col-12 col-sm-2">
+    {{--  add tag button  --}}
+    <button type="button" class="btn btn-primary" id="addTagBtn">Add</button>
+  </div>
+</div>
+
+<div id="tabContainer" class="p-4 border rounded mt-2">
+
+</div>
+
+<script>
+  $(document).ready(() => {
+
+    // for unique ids of tags
+    let index = 0
+
+    // array of tags
+    const tags = []
+
+    const $tagInputContainer = $('#tagContainer')
+    const $tabContainer = $('#tabContainer')
+    const $addTagBtn = $('#addTagBtn')
+    const $tagInput = $('#tagInput')
+
+    // post tags
+    const postTags = JSON.parse('{{{ JSON.stringify(tags) }}}')
+
+    const appendTagInput = (id, value) => {
+      const input = `<input type=hidden id=tag_${id} name="tags[]" value=${value}>`
+      $tagInputContainer.append(input)
+    }
+
+    const removeTagInput = (id) => {
+      $tagInputContainer.children(`#tag_${id}`).remove()
+    }
+
+    $addTagBtn.on('click', (e) => {
+      e.preventDefault()
+
+      const value = $tagInput.val()
+
+      const regexResult = /^[a-zA-Z]+$/.test(value)
+
+      if (!regexResult) {
+        alert('Tags can only contain alphabets with no white space only')
+        return
+      }
+
+      const tagExists = tags.find((tag) => tag === value)
+      if (tagExists) {
+        alert('Tag already exists')
+        return
+      }
+
+      tags.push(value)
+      appendTagInput(index, value)
+
+      const savedId = index
+
+      const element = `
+      <span class="badge rounded-pill bg-secondary text-capitalize m-1 p-2" id=${savedId} style="cursor:pointer;">${value}</span>
+      `
+      $tabContainer.append(element)
+
+      const $tagInstance = $(`#${savedId}`)
+
+      $tagInstance.on('click', () => {
+        const index = tags.indexOf($tagInstance.text())
+        if (index > -1) {
+          tags.splice(index, 1)
+          removeTagInput(savedId)
+          $tagInstance.addClass('fade').remove()
+        }
+      })
+
+      index += 1
+      $tagInput.val('')
+    })
+
+    if (postTags && postTags.length) {
+      for (const tag of postTags) {
+        tags.push(tag.title)
+        appendTagInput(index, tag.title)
+
+        const savedId = index
+
+        const element =
+          `
+            <span class="badge rounded-pill bg-secondary text-capitalize m-1 p-2" id=${savedId} style="cursor:pointer;">${tag.title}</span>
+          `
+        $tabContainer.append(element)
+
+        const $tagInstance = $(`#${savedId}`)
+
+        $tagInstance.on('click', () => {
+          const index = tags.indexOf($tagInstance.text())
+          if (index > -1) {
+            tags.splice(index, 1)
+            removeTagInput(savedId)
+            $tagInstance.addClass('fade').remove()
+          }
+        })
+
+        index += 1
+      }
+    }
+
+  })
+
+</script>

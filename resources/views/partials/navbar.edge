@@ -1,0 +1,56 @@
+<nav class="navbar navbar-expand-lg bg-light shadow-sm p-3 mb-4 navbar-light">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold text-primary" href="{{ route('home') }}">Perest</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+        @if(auth.isLoggedIn)
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{{ route('posts.create') }}">Create</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            {{profile.first_name}}
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="{{ route('profile.show', { id: profile.id }) }}">Profile</a></li>
+            <li><a class="dropdown-item" href="{{ route('posts.index') }}">Posts</a></li>
+            <li><a class="dropdown-item" href="{{ route('AuthController.logout') }}">Logout</a></li>
+          </ul>
+        </li>
+        @else
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{{ route('AuthController.login') }}">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ route('AuthController.signup') }}">Sign Up</a>
+        </li>
+        @endif
+
+      </ul>
+      <form action="{{ route('home') }}" method="GET" class="d-flex" role="search">
+        <input class="form-control me-2" type="search" name="search" placeholder="Search" id="search_input"
+          aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+      <script>
+        $(document).ready(() => {
+          const parms = new URLSearchParams(window.location.search)
+          const value = parms.get('search')
+          if (value) {
+            $('#search_input').val(value)
+          }
+        })
+
+      </script>
+
+      <a class="btn btn-outline-info ms-1" href="{{ route('home') }}">Reset</a>
+
+    </div>
+  </div>
+</nav>
